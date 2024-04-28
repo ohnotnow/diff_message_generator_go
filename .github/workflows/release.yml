@@ -28,5 +28,6 @@ jobs:
           with:
             tag_name: ${{ steps.vars.outputs.tag }}  # Use the tag name to create the release
             files: 'gdm'  # Upload the built binary
+            token: ${{ secrets.GITHUB_TOKEN }}
             draft: false
             prerelease: false
