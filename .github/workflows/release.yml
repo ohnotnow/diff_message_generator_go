@@ -1,0 +1,32 @@
+name: Build and Release
+on:
+  push:
+    tags:
+      - 'v*'
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+        - name: Checkout code
+          uses: actions/checkout@v3
+
+        - name: Set up Go
+          uses: actions/setup-go@v4
+          with:
+            go-version: '1.21'
+
+        - name: Build binary
+          run: |
+            go build -o gdm
+
+        - name: Get the tag name
+          id: vars
+          run: echo "::set-output name=tag::${GITHUB_REF#refs/tags/}"
+
+        - name: Create GitHub Release
+          uses: softprops/action-gh-release@v1
+          with:
+            tag_name: ${{ steps.vars.outputs.tag }}  # Use the tag name to create the release
+            files: 'gdm'  # Upload the built binary
+            draft: false
+            prerelease: false
