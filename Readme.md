@@ -15,11 +15,11 @@ This Go program runs `git diff` to collect changes in a Git repository and then 
 ## Installation
 1. Clone the repository to your local machine:
    ```bash
-   git clone <YOUR-REPO-URL>
+   git clone https://github.com/ohnotnow/diff_message_generator_go
    ```
 2. Change into the project directory:
    ```bash
-   cd <YOUR-REPO-NAME>
+   cd diff_message_generator_go
    ```
 3. Build the Go program:
    ```bash
