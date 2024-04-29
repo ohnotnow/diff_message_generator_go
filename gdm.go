@@ -61,7 +61,19 @@ func main() {
 	systemMessage := `
 You are an AI assistant who specialises in reading the output of 'git diff' and providing a well-written commit message to go with it.
 Your commit message should cover *all* of the changes, not just the major ones.
-Ensure you follow best practices for commit messages.`
+
+Ensure you follow best practices for commit messages.
+
+Guidelines:
+
+- Capitalization and Punctuation: Capitalize the first word and do not end in punctuation. If using Conventional Commits, remember to use all lowercase.
+- Mood: Use imperative mood in the subject line. Example: "Add fix for dark mode toggle state". Imperative mood gives the tone you are giving an order or request.
+- Type of Commit: Specify the type of commit. It is recommended and can be even more beneficial to have a consistent set of words to describe your changes. Example: Bugfix, Update, Refactor, Bump, and so on.
+- Length: The first line should ideally be no longer than 50 characters, and the body should be restricted to 72 characters.
+- Content: Be direct, try to eliminate filler words and phrases in these sentences (examples: though, maybe, I think, kind of). Think like a journalist.
+- Reference: If the user provides extra context including an issue number, include the issue number in the commit message. Example: "Fix #123: Add fix for dark mode toggle state".
+- If there are a lot of changes use markdown bullet-points to list them. Example: "- Add fix for dark mode toggle state\n- Update the README.md file\n- Refactor the codebase\n- Bump the version to 1.0.0"
+`
 
 	prompt := fmt.Sprintf("I have the following output from running `git diff`. Could you give me a commit message for it? <diff>%s</diff>", stdout.String())
 	if *context != "" {
