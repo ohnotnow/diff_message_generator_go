@@ -1,28 +1,56 @@
 name: Build and Release
+
 on:
   push:
     tags:
       - 'v*'
+
 permissions:
-    contents: write
-    packages: write
+  contents: write
+  packages: write
+
 jobs:
-    build:
-        runs-on: ubuntu-latest
-        steps:
-        - name: Checkout code
-          uses: actions/checkout@v3
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [macos, linux, windows]
+        arch: [amd64, arm, arm32]
+        include:
+          - os: macos
+            arch: arm
+            env: GOOS=darwin GOARCH=arm64
+          - os: macos
+            arch: amd64
+            env: GOOS=darwin GOARCH=amd64
+          - os: linux
+            arch: amd64
+            env: GOOS=linux GOARCH=amd64
+          - os: linux
+            arch: arm
+            env: GOOS=linux GOARCH=arm
+          - os: linux
+            arch: arm32
+            env: GOOS=linux GOARCH=arm GOARM=6
+          - os: windows
+            arch: amd64
+            env: GOOS=windows GOARCH=amd64
 
-        - name: Set up Go
-          uses: actions/setup-go@v4
-          with:
-            go-version: '1.21'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-        - name: Build binary
-          run: |
-            go build -o gdm
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'
 
-        - name: Create GitHub Release
-          uses: softprops/action-gh-release@v2
-          with:
-            files: gdm
+    - name: Build binary
+      run: |
+        go build -o gdm
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: gdm
+        name: "gdm_${os}_${arch}"
