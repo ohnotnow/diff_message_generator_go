@@ -42,7 +42,7 @@ type AIResponse struct {
 }
 
 func main() {
-	model := flag.String("model", "gpt-4-turbo", "The model to use")
+	model := flag.String("model", "gpt-4o", "The model to use")
 	context := flag.String("context", "", "Additional context for the commit message")
 	flag.Parse()
 

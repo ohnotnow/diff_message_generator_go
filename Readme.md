@@ -37,10 +37,10 @@ To run the program, use the following command:
 ```bash
 ./gdm --model <MODEL-NAME> --context "Your additional context"
 ```
-- **Model**: Specifies the OpenAI model to use (default: `gpt-4-turbo`).
+- **Model**: Specifies the OpenAI model to use (default: `gpt-4o`).
 - **Context**: Optional additional context to be added to the prompt sent to OpenAI.
 
-If you do not specify a model, it defaults to `gpt-4-turbo`. Ensure that you have a valid OpenAI API key set in the environment variable `OPENAI_API_KEY`.
+If you do not specify a model, it defaults to `gpt-4o`. Ensure that you have a valid OpenAI API key set in the environment variable `OPENAI_API_KEY`.
 
 ## Output
 The output is a well-written commit message based on the `git diff` result, displayed in the console. You can then use this message to commit your changes in Git.
