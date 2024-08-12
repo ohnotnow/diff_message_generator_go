@@ -35,10 +35,10 @@ This Go program runs `git diff` to collect changes in a Git repository and then 
 ## Usage
 To run the program, use the following command:
 ```bash
-./gdm --model <MODEL-NAME> --context "Your additional context"
+./gdm --model <MODEL-NAME> [Optionally add some additional context]
 ```
 - **Model**: Specifies the OpenAI model to use (default: `gpt-4o-mini`).
-- **Context**: Optional additional context to be added to the prompt sent to OpenAI.
+- Optional additional context to be added to the prompt sent to OpenAI.
 
 If you do not specify a model, it defaults to `gpt-4o-mini`. Ensure that you have a valid OpenAI API key set in the environment variable `OPENAI_API_KEY`.
 
