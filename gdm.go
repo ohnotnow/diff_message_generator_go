@@ -43,8 +43,10 @@ type AIResponse struct {
 
 func main() {
 	model := flag.String("model", "gpt-4o-mini", "The model to use")
-	context := flag.String("context", "", "Additional context for the commit message")
 	flag.Parse()
+
+	// Capture additional context if provided as arguments after the flags
+	extraContext := strings.Join(flag.Args(), " ")
 
 	cmd := exec.Command("git", "--no-pager", "diff", "--color-moved=no")
 	var stdout bytes.Buffer
@@ -59,7 +61,7 @@ func main() {
 	}
 
 	systemMessage := `
-You are an AI assistant who specialises in reading the output of 'git diff' and providing a well-written commit message to go with it.
+You are an AI assistant who specializes in reading the output of 'git diff' and providing a well-written commit message to go with it.
 Your commit message should cover *all* of the changes, not just the major ones.
 
 Ensure you follow best practices for commit messages.
@@ -76,8 +78,8 @@ Guidelines:
 `
 
 	prompt := fmt.Sprintf("I have the following output from running `git diff`. Could you give me a commit message for it? <diff>%s</diff>", stdout.String())
-	if *context != "" {
-		prompt = fmt.Sprintf("%s\n\n%s", *context, prompt)
+	if extraContext != "" {
+		prompt = fmt.Sprintf("Context: %s\n\n%s", extraContext, prompt)
 	}
 
 	request := AIRequest{
@@ -141,3 +143,5 @@ Guidelines:
 	commitMessage = strings.Trim(commitMessage, "`\n ")
 	fmt.Println(commitMessage)
 }
+
+
