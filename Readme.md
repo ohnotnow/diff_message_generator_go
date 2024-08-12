@@ -13,6 +13,9 @@ This Go program runs `git diff` to collect changes in a Git repository and then 
 - An OpenAI API key
 
 ## Installation
+
+The easiest way is to download a binary for your OS/architecture from the Releases page.  If you want to build the code yourself then :
+
 1. Clone the repository to your local machine:
    ```bash
    git clone https://github.com/ohnotnow/diff_message_generator_go
