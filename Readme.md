@@ -48,6 +48,32 @@ If you do not specify a model, it defaults to `gpt-4o-mini`. Ensure that you hav
 ## Output
 The output is a well-written commit message based on the `git diff` result, displayed in the console. You can then use this message to commit your changes in Git.
 
+## Helper shell function
+
+I use this function (MacOS specific) to run the gdm command, show the output and also copy it to the clipboard.  
+
+```bash
+gdmp() {
+    local result
+
+    if [ $# -eq 0 ]; then
+        # No arguments, run gdm and pipe to pbcopy
+        gdm | pbcopy
+        result=$(pbpaste)
+    else
+        # Arguments provided, capture gdm output then pipe to pbcopy
+        result=$(gdm "$@")
+        echo "$result" | pbcopy
+    fi
+
+    # Print the result to the terminal
+    echo "$result"
+    echo "The commit message has been copied to your clipboard."
+}
+```
+
+Then you can just run `gdmp` and do your `git add` and paste in the message.  Or `gdmp improve error handling of missing files` to give some extra context.
+
 ## License
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
