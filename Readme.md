@@ -47,6 +47,7 @@ If you do not specify a model, it defaults to `gpt-4o-mini`. Ensure that you hav
 
 ## Output
 The output is a well-written commit message based on the `git diff` result, displayed in the console. You can then use this message to commit your changes in Git.
+The output is geared to try and follow the 'Conventional Commit' standard.  See https://www.conventionalcommits.org/en/v1.0.0/ .
 
 ## Helper shell function
 
