@@ -51,7 +51,7 @@ The output is geared to try and follow the 'Conventional Commit' standard.  See 
 
 ## Helper shell function
 
-I use this function (MacOS specific) to run the gdm command, show the output and also copy it to the clipboard.  
+I use this function (MacOS specific) in my `~/.bashrc` to run the gdm command, show the output and also copy it to the clipboard.  
 
 ```bash
 gdmp() {
