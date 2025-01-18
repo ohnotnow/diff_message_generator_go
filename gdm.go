@@ -60,6 +60,15 @@ func main() {
 		return
 	}
 
+        // Get the output of git diff
+    diffOutput := stdout.String()
+
+    // Check if the git diff output is empty
+    if diffOutput == "" {
+        fmt.Println("No changes detected. There is nothing to commit.")
+        return
+    }
+
 	systemMessage := `
 You are an AI assistant specialized in reading the output of 'git diff' and generating well-structured commit messages following the **Conventional Commits** specification.
 
