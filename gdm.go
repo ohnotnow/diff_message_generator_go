@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 )
 
@@ -36,7 +37,7 @@ type AIResponse struct {
 	} `json:"choices"`
 	Usage struct {
 		PromptTokens     int `json:"prompt_tokens"`
-		CompletionTokens int `json.maked_tokens"`
+		CompletionTokens int `json:"completion_tokens"`
 		TotalTokens      int `json:"total_tokens"`
 	} `json:"usage"`
 }
@@ -48,27 +49,26 @@ func main() {
 	// Capture additional context if provided as arguments after the flags
 	extraContext := strings.Join(flag.Args(), " ")
 
+	// Run git diff command
 	cmd := exec.Command("git", "--no-pager", "diff", "--color-moved=no")
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
 	err := cmd.Run()
-
 	if err != nil {
 		fmt.Println("Error running `git diff`:", stderr.String())
 		return
 	}
 
-        // Get the output of git diff
-    diffOutput := stdout.String()
+	// Get the output of git diff
+	diffOutput := stdout.String()
+	if diffOutput == "" {
+		fmt.Println("No changes detected. There is nothing to commit.")
+		return
+	}
 
-    // Check if the git diff output is empty
-    if diffOutput == "" {
-        fmt.Println("No changes detected. There is nothing to commit.")
-        return
-    }
-
+	// Default prompt for the AI system message
 	systemMessage := `
 You are an AI assistant specialized in reading the output of 'git diff' and generating well-structured commit messages following the **Conventional Commits** specification.
 
@@ -105,11 +105,11 @@ Your commit message should include:
 
 - **Response**:
   - Only respond with the commit message, no other text or chat.
-  
+
 - **Capitalization and Punctuation**:
   - Capitalize the first word of the subject line.
   - Do not end the subject line with punctuation.
-  
+
 - **Length**:
   - Subject line: Ideally no longer than 50 characters.
   - Summary: Keep it concise, typically one to two sentences.
@@ -135,11 +135,39 @@ Introduce OAuth2 authentication to enhance security and provide third-party logi
 - Improve error handling for OAuth2 login failures
 `
 
-	prompt := fmt.Sprintf("I have the following output from running `git diff`. Could you give me a commit message for it? <diff>%s</diff>", stdout.String())
+	// Check for a custom prompt file in the user's home directory
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		fmt.Println("Error getting user's home directory:", err)
+		// Continue using the default prompt
+	} else {
+		promptFilePath := filepath.Join(homeDir, ".git_diff_prompt.txt")
+		if _, err := os.Stat(promptFilePath); os.IsNotExist(err) {
+			// File doesn't exist; create it with the default prompt.
+			err = os.WriteFile(promptFilePath, []byte(systemMessage), 0644)
+			if err != nil {
+				fmt.Println("Error creating prompt file:", err)
+			}
+		} else if err == nil {
+			// File exists; read its contents and override the default prompt.
+			data, err := os.ReadFile(promptFilePath)
+			if err != nil {
+				fmt.Println("Error reading prompt file:", err)
+			} else {
+				systemMessage = string(data)
+			}
+		} else {
+			fmt.Println("Error checking prompt file:", err)
+		}
+	}
+
+	// Build the user prompt with the git diff output
+	prompt := fmt.Sprintf("I have the following output from running `git diff`. Could you give me a commit message for it? <diff>%s</diff>", diffOutput)
 	if extraContext != "" {
 		prompt = fmt.Sprintf("Context: %s\n\n%s", extraContext, prompt)
 	}
 
+	// Build the API request
 	request := AIRequest{
 		Model: *model,
 		Messages: []struct {
@@ -201,5 +229,4 @@ Introduce OAuth2 authentication to enhance security and provide third-party logi
 	commitMessage = strings.Trim(commitMessage, "`\n ")
 	fmt.Println(commitMessage)
 }
-
 
