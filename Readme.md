@@ -7,6 +7,7 @@ This Go program runs `git diff` to collect changes in a Git repository and then 
 - Reads Git repository changes with `git diff`.
 - Integrates additional context to create informative and comprehensive commit messages.
 - Offers flexibility in choosing the OpenAI model and custom context.
+- Customise the format and style of the prompt using `~/.git_diff_prompt.txt`
 
 ## Requirements
 - Go 1.16 or later
